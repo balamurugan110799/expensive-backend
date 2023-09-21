@@ -5,7 +5,7 @@ const {getAllUsers, signUp, LoginUser} = require("../controller/user/userControl
 const {addGold,getGold, updateGold,deleteGold} = require("../controller/gold/goldController")
 const {getAllGoldCal} = require("../controller/gold/dashBoardGold")
 const {addEstimate, getAllEstimate} = require("../controller/house/estimateController")
-const {addEstimatePayment, getEsitmatePayment} = require("../controller/house/estimatePaymentController")
+const {addEstimatePayment, getEsitmatePayment, updateEstimatePayment, deleteEstimatePayment} = require("../controller/house/estimatePaymentController")
 
 
 routers.route("/addExpensive").post(AddExpensive)
@@ -29,7 +29,8 @@ routers.route("/getAllEstimate").get(getAllEstimate)
 
 routers.route("/addEstimatePayment").post(addEstimatePayment)
 routers.route("/getEsitmatePayment").get(getEsitmatePayment)
-
+routers.route("/updateEstimatePayment/:id").put(updateEstimatePayment)
+routers.route("/deleteEstimatePayment/:id").delete(deleteEstimatePayment)
 
 
 module.exports = routers

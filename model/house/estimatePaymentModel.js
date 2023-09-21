@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 
 const estimatePayment = new mongoose.Schema({
     date:{
-        type:String,
+        type:Number,
         require:true
     },
     name:{
