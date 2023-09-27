@@ -4,9 +4,9 @@ const { AddExpensive, expensiveGetAll, editExpensive , removeExpensive} = requir
 const {getAllUsers, signUp, LoginUser} = require("../controller/user/userController")
 const {addGold,getGold, updateGold,deleteGold} = require("../controller/gold/goldController")
 const {getAllGoldCal} = require("../controller/gold/dashBoardGold")
-const {addEstimate, getAllEstimate} = require("../controller/house/estimateController")
+const {addEstimate, getAllEstimate, updateEstimate, deleteEstimate} = require("../controller/house/estimateController")
 const {addEstimatePayment, getEsitmatePayment, updateEstimatePayment, deleteEstimatePayment} = require("../controller/house/estimatePaymentController")
-
+const {addNestData, getAllnestedModel, updateNestedModel} = require("../controller/nestedModelController")
 
 routers.route("/addExpensive").post(AddExpensive)
 routers.route("/getAllExpensive").get(expensiveGetAll)
@@ -26,6 +26,18 @@ routers.route("/getGoldCal").get(getAllGoldCal,)
 
 routers.route("/addEstimate").post(addEstimate)
 routers.route("/getAllEstimate").get(getAllEstimate)
+routers.route("/updateEstimate/:id").put(updateEstimate)
+routers.route("/deleteEstimate/:id").delete(deleteEstimate)
+
+//nested
+routers.route("/addNestedModel").post(addNestData)
+routers.route("/getnestedModel").get(getAllnestedModel)
+routers.route("/updatenestedModel/:id").put(updateNestedModel)
+
+
+
+
+
 
 routers.route("/addEstimatePayment").post(addEstimatePayment)
 routers.route("/getEsitmatePayment").get(getEsitmatePayment)

@@ -1,11 +1,23 @@
 const estimate = require("../../model/house/estimateModel")
+const expensiveDB = require("../../model/expensiveDBModel")
 
 exports.addEstimate = async (req, res) => {
     try {
-        const estimateCreate = await estimate.create({
-            plan: req.body.plan,
-            amount: req.body.amount,
-            value:req.body.amount
+        const getEstimateAll = await expensiveDB.find()
+        const getEst = []
+        getEstimateAll.forEach((el) => {
+            getEst.push(el.house.estimate)
+        })
+        const estimateCreate = await expensiveDB.create({
+            year:req.body.date,
+            house: {
+                estimate: {
+                    plan: req.body.plan,
+                    amount: req.body.amount,
+                    value: req.body.amount,
+                    date: req.body.date
+                }
+            }
         })
         res.status(201).json({
             status: "success",
@@ -20,25 +32,60 @@ exports.addEstimate = async (req, res) => {
     }
 }
 
-exports.getAllEstimate = async (req,res) =>{
-    try{
-        const getEstimate = await estimate.find()
-        const addEstimate = []
-        getEstimate.forEach((el)=>{
-            addEstimate.push(el.amount)
+exports.getAllEstimate = async (req, res) => {
+    try {
+        const getEstimateAll = await expensiveDB.find()
+        const getEst = []
+        getEstimateAll.forEach((el) => {
+            getEst.push(el.house.estimate)
         })
-       console.log(addEstimate)
-
-       var initialValue =0 ;
-       const sumWithInitial = addEstimate.reduce((accumulator, currentValue) => accumulator + currentValue, initialValue);
-    //    var total =await addEstimate.reduce(acc,cur => acc+cur ,initialValue )
-       console.log(sumWithInitial)
+        console.log(getEst)
         res.status(200).json({
             status: "success",
-            total_amount: sumWithInitial,
-            data: getEstimate,
+            getEst: getEst,
         })
-    }catch(err){
+    } catch (err) {
+        res.status(500).json({
+            status: "falied",
+            message: "Internal Server Error"
+        })
+    }
+}
+
+exports.updateEstimate = async (req, res) => {
+    try {
+        const EstimateId = req.params.id
+        const updateEstimate = await expensiveDB.findOneAndUpdate({ id: EstimateId }, {
+            house: {
+                estimate: {
+                    plan: req.body.plan,
+                    amount: req.body.amount,
+                    date: req.body.date
+                }
+            }
+        }, { new: true })
+        res.status(200).json({
+            status: "success",
+            update: updateEstimate,
+        })
+        console.log(updateEstimate)
+
+    } catch (err) {
+        res.status(500).json({
+            status: "falied",
+            message: "Internal Server Error"
+        })
+    }
+}
+
+exports.deleteEstimate = async (req, res) => {
+    try {
+        const EstimateId = req.params.id
+        const deleteEstimate = await expensiveDB.findByIdAndDelete({_id:EstimateId})
+        res.status(200).json({
+            status: "success",
+        })
+    } catch (err) {
         res.status(500).json({
             status: "falied",
             message: "Internal Server Error"

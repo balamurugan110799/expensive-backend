@@ -1,4 +1,5 @@
 const users = require("../../model/users/usersModel")
+// const userModel = require("../../model/expensiveDBModel")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken");
 exports.getAllUsers = (req, res) => {
@@ -8,17 +9,21 @@ exports.getAllUsers = (req, res) => {
 exports.signUp = async (req, res) => {
     try {
         const { username, password, email } = req.body
-        var hash = await bcrypt.hash(password, 10)
+
+        var hash = await bcrypt.hash(req.body.password, 10)
         var createUser = await users.create({
             username: username,
             email: email,
             password: hash,
         })
+
         res.status(201).json({
             status: "success",
             data: createUser
         })
+        
     } catch (err) {
+        console.log(err)
         res.status(500).json({
             status: "failed",
             message: err
