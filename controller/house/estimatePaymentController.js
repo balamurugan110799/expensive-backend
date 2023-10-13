@@ -1,19 +1,20 @@
-const estimatePayment = require("../../model/house/estimatePaymentModel")
-const estimate = require("../../model/house/estimateModel")
+
+const expensiveDB = require("../../model/expensiveDBModel")
+
 
 exports.addEstimatePayment = async (req, res) => {
     try {
-        const estimate = await estimatePayment.create({
-            date: req.body.date,
-            name: req.body.name,
-            amount: req.body.amount,
-            value: req.body.amount,
+    
+        const estimateCreate = await expensiveDB.create({
+            year:req.body.year,
+            estimatePayment:req.body.estimatePayment
         })
         res.status(201).json({
             status: "success",
-            data: estimate
+            data: estimateCreate
         })
     } catch (err) {
+        console.log(err)
         res.status(500).json({
             status: "falied",
             message: "Internal Server Error"
@@ -23,16 +24,18 @@ exports.addEstimatePayment = async (req, res) => {
 
 exports.updateEstimatePayment = async (req, res) => {
     try {
-        const ID = (req.params.id)
-        var updateData = await estimatePayment.findByIdAndUpdate({ _id: ID }, {
-            date: req.body.date,
-            name: req.body.name,
-            amount: req.body.amount,
-            value: req.body.amount,
-        }, { new: true })
+        const EstimateId = req.params.id
+        console.log(EstimateId)
+        const updateEstimate = await expensiveDB.findOneAndUpdate({ _id: EstimateId },{
+            year:req.body.year,
+            estimatePayment:req.body.estimatePayment
+        },{new:true})
+        // var estimate = delete updateEstimate.update.estimate
+      
         res.status(200).json({
             status: "success",
-            data: updateData
+        //  estimate : delete updateEstimate.update.estimate,
+            update: updateEstimate,
         })
 
     } catch (err) {
@@ -44,13 +47,13 @@ exports.updateEstimatePayment = async (req, res) => {
 }
 
 exports.deleteEstimatePayment = async (req, res) =>{
-    try{
-        const ID = (req.params.id)
-        const deleteData = await estimatePayment.findOneAndDelete({_id:ID},{new:true})
+    try {
+        const EstimateId = req.params.id
+        const deleteEstimate = await expensiveDB.findByIdAndDelete({_id:EstimateId})
         res.status(200).json({
             status: "success",
         })
-    }catch(err){
+    } catch (err) {
         res.status(500).json({
             status: "falied",
             message: "Internal Server Error"
@@ -60,37 +63,39 @@ exports.deleteEstimatePayment = async (req, res) =>{
 
 exports.getEsitmatePayment = async (req, res) => {
     try {
-        const estimatePaymentAll = await estimatePayment.find()
-        const estimateGive = await estimate.find()
-
-        const addEstimate = []
-        const addEstimateGive = []
-        estimatePaymentAll.forEach((el) => {
-            addEstimate.push(el.amount)
+        const getEst = await expensiveDB.find()
+        const estimatePaymentAll = []
+        const Estimate =[]
+        getEst.forEach((el)=>{
+            if(el.estimatePayment.length===1){
+                estimatePaymentAll.push(el)
+            }else if(el.estimate.length===1){
+                Estimate.push(el.estimate[0].amount)
+            }
         })
-
-        estimateGive.forEach((el) => {
-            addEstimateGive.push(el.amount)
+        var amount =[]
+        estimatePaymentAll.forEach((el)=>{
+            amount.push(el.estimatePayment[0].amount)
         })
-        console.log(addEstimate)
+        var initaialValue = 0;
+        var total = amount.reduce((acc,currentValue)=>acc+currentValue ,initaialValue)
+        console.log(total,Estimate)
+        var Esttotal = Estimate.reduce((acc,currentValue)=>acc+currentValue ,initaialValue)
+        var give =  Esttotal -total
 
-        var initialValue = 0;
-        var addEstimateGiveFilter = addEstimateGive.filter(Number)
-        const estimate_payment = addEstimate.reduce((accumulator, currentValue) => accumulator + currentValue, initialValue);
-        const total_estimate = addEstimateGiveFilter.reduce((accumulator, currentValue) => accumulator + currentValue, initialValue);
-        console.log(addEstimate, addEstimateGiveFilter, "hello")
-
-        const cal = total_estimate - estimate_payment
-
-        res.status(201).json({
-            status: "success",
-            estimate_payment: estimate_payment,
-            total_estimate: total_estimate,
-            need_to_give: cal,
-            data: estimatePaymentAll
+        // var eatimateAmount=[]
+        // getEst.forEach((el)=>{
+        //     amount.push(el.estimate[0].amount)
+        // })
+        // console.log(Esttotal)
+        res.status(200).json({
+            status:"success",
+            total:total,
+            need_to_give:give,
+            totel_estimate: Esttotal,
+            data:estimatePaymentAll
         })
     } catch (err) {
-        console.log(err)
         res.status(500).json({
             status: "falied",
             message: "Internal Server Error"

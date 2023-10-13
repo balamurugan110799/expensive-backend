@@ -4,7 +4,6 @@ exports.addNestData = async (req, res) => {
     try {
         const addNestedModel = await nestedModel.create({
             id: req.body.id,
-            
             name: req.body.name,
             mark: req.body.mark,
         })

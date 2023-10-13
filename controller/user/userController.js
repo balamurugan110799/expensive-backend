@@ -56,7 +56,6 @@ exports.LoginUser = async (req, res) => {
         res.status(200).json({
             email: req.body.email,
             role: ExistMail.role,
-
             token: token
         })
 

@@ -3,21 +3,10 @@ const expensiveDB = require("../../model/expensiveDBModel")
 
 exports.addEstimate = async (req, res) => {
     try {
-        const getEstimateAll = await expensiveDB.find()
-        const getEst = []
-        getEstimateAll.forEach((el) => {
-            getEst.push(el.house.estimate)
-        })
+    
         const estimateCreate = await expensiveDB.create({
-            year:req.body.date,
-            house: {
-                estimate: {
-                    plan: req.body.plan,
-                    amount: req.body.amount,
-                    value: req.body.amount,
-                    date: req.body.date
-                }
-            }
+            year:req.body.year,
+            estimate:req.body.estimate
         })
         res.status(201).json({
             status: "success",
@@ -34,15 +23,28 @@ exports.addEstimate = async (req, res) => {
 
 exports.getAllEstimate = async (req, res) => {
     try {
-        const getEstimateAll = await expensiveDB.find()
-        const getEst = []
-        getEstimateAll.forEach((el) => {
-            getEst.push(el.house.estimate)
+        const getEst = await expensiveDB.find()
+        const estimate = []
+        
+        getEst.forEach((el)=>{
+            if(el.estimate.length===1){
+                estimate.push(el)
+            }
         })
-        console.log(getEst)
+        var amount =[]
+        estimate.forEach((el)=>{
+            amount.push(el.estimate[0].amount)
+ 
+        })
+        var initaialValue = 0;
+        var total = amount.reduce((acc,currentValue)=>acc+currentValue ,initaialValue)
+        console.log(total)
+        
+        // console.log(getEst)
         res.status(200).json({
-            status: "success",
-            getEst: getEst,
+            status:"success",
+            total_Amount :total,
+            estimate:estimate
         })
     } catch (err) {
         res.status(500).json({
@@ -55,15 +57,11 @@ exports.getAllEstimate = async (req, res) => {
 exports.updateEstimate = async (req, res) => {
     try {
         const EstimateId = req.params.id
-        const updateEstimate = await expensiveDB.findOneAndUpdate({ id: EstimateId }, {
-            house: {
-                estimate: {
-                    plan: req.body.plan,
-                    amount: req.body.amount,
-                    date: req.body.date
-                }
-            }
-        }, { new: true })
+        console.log(EstimateId)
+        const updateEstimate = await expensiveDB.findOneAndUpdate({ _id: EstimateId },{
+            year:req.body.year,
+            estimate:req.body.estimate
+        },{new:true})
         res.status(200).json({
             status: "success",
             update: updateEstimate,

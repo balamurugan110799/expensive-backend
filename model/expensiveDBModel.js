@@ -1,53 +1,77 @@
 const mongoose = require("mongoose")
 
 const expensiveDB = new mongoose.Schema({
-    year:{
-        type:Number,
-        require:true,
+    timestamp: {
+        type: Number,
+        require: true,
     },
-    house:{
-        estimate:{
-            _id:{
-                type:Number,
-                require:true,
+    amount: {
+        type: Number,
+        require: true,
+    },
+    income: [
+        {
+            amount: {
+                type: Number,
+                require: true,
             },
-            date:{
-                type:Number,
-                require: true
+            total_amount: {
+                type: Number,
+                require: false,
             },
-            plan:{
-                type:String,
-                require: true
+            year: {
+                type: Number,
+                require: false,
             },
-            amount:{
-                type:Number,
-                require: true
-            },
-            value:{
-                type:Number,
-                require: true
-            },
-        },
-        estimatePayment:{
-            date:{
-                type:Number,
-                require: true
-            },
-            name:{
-                type:String,
-                require: true
-            },
-            amount:{
-                type:Number,
-                require: true
-            },
-            value:{
-                type:Number,
-                require: true
+            monthof: {
+                type: String,
+                require: false,
             },
         }
+    ],
+    duration: [{
+        year: {
+            type: Number,
+            require: true
+        },
+        month: {
+            type: Number,
+            require: true,
+        },
+        day: {
+            type: String,
+            require: true,
+        },
+        hour: {
+            type: Number,
+            require: true,
+        },
+        minute: {
+            type: Number,
+            require: true,
+        },
+        second: {
+            type: Number,
+            require: true,
+        },
+        monthof: {
+            type: String,
+            require: true,
+        },
+        localstring: {
+            type: String,
+            require: true,
+        },
+        localtimestring: {
+            type: String,
+            require: true,
+        },
+        dateString: {
+            type: String,
+            require: true,
+        }
+    }],
 
-    }
 })
 
 module.exports = mongoose.model("expensiveDB", expensiveDB)
